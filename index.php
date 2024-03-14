@@ -49,7 +49,6 @@ class Othello {
             return false;
         }
 
-        // Check if the move is surrounded
         return $this->isSurrounded($x, $y);
     }
 
@@ -132,36 +131,42 @@ class Othello {
         }
         return false;
     }
-}
 
-// ...
+    // Game loop
+    public function playGame() {
+        while (true) {
+            // Display the board
+            $this->printBoard();
+
+            // Get user input for the next move
+            $x = readline('Enter x: ');
+            $y = readline('Enter y: ');
+
+            if (!$this->isMoveValid($x, $y)) {
+                echo 'Invalid move.' . PHP_EOL;
+                continue;
+            }
+
+            // Place the piece
+            $this->placePiece($x, $y);
+
+            // Switch turns
+            $this->turn = $this->turn === 'black' ? 'white' : 'black';
+
+            // Check for stalemate
+            if (!$this->hasValidMoves($this->turn)) {
+                $winner = $this->getWinner();
+                if ($winner === 'draw') {
+                    echo "Stalemate! The game is drawn." . PHP_EOL;
+                } else {
+                    echo "Stalemate! The winner is $winner." . PHP_EOL;
+                }
+                break;
+            }
+        }
+    }
+}
 
 $othello = new Othello();
 $othello->init();
-
-while (true) {
-    // ...
-
-    $x = readline('Enter x: ');
-    $y = readline('Enter y: ');
-
-    if (!$othello->isMoveValid($x, $y)) {
-        echo 'Invalid move.' . PHP_EOL;
-        continue;
-    }
-
-    $othello->placePiece($x, $y);
-
-    // Display the board (optional)
-    $othello->printBoard();
-
-    // Switch turns
-    $othello->turn = $othello->turn === 'black' ? 'white' : 'black';
-
-    // Check for stalemate (optional)
-    if (!$othello->hasValidMoves($othello->turn)) {
-        $winner = $othello->turn === 'black' ? 'white' : 'black';
-        echo "Stalemate! The winner is $winner." . PHP_EOL;
-        break;
-    }
-}
+$othello->playGame();
